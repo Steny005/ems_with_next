@@ -6,11 +6,11 @@ import Employee from "@/models/Employee";
 // GET SINGLE EMPLOYEE
 // ===============================
 
-export async function GET(request, context) {
+export async function GET(request, { params }) {
   try {
     await connectDB();
 
-    const { id } = await context.params;
+    const { id } = await params;
 
     const employee = await Employee.findById(id);
 
@@ -48,11 +48,11 @@ export async function GET(request, context) {
 // UPDATE EMPLOYEE
 // ===============================
 
-export async function PUT(request, context) {
+export async function PUT(request, { params }) {
   try {
     await connectDB();
 
-    const { id } = await context.params;
+    const { id } = await params;
 
     const body = await request.json();
 
@@ -100,11 +100,11 @@ export async function PUT(request, context) {
 // DELETE EMPLOYEE
 // ===============================
 
-export async function DELETE(request, context) {
+export async function DELETE(request, { params }) {
   try {
     await connectDB();
 
-    const { id } = await context.params;
+    const { id } = await params;
 
     const employee = await Employee.findByIdAndDelete(id);
 

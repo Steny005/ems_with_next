@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import MainLayout from "@/components/MainLayout";
 
 export default function EditEmployeePage() {
   const router = useRouter();
@@ -21,34 +22,37 @@ export default function EditEmployeePage() {
   });
 
   useEffect(() => {
-    getEmployee();
-  }, []);
+    async function fetchEmployee() {
+      try {
+        const response = await fetch(`/api/employees/${id}`);
+        const data = await response.json();
 
-  async function getEmployee() {
-    try {
-      const response = await fetch(`/api/employees/${id}`);
-      const data = await response.json();
-
-      if (data.success) {
-        setFormData({
-          employeeId: data.employee.employeeId,
-          fullName: data.employee.fullName,
-          email: data.employee.email,
-          phone: data.employee.phone,
-          department: data.employee.department,
-          designation: data.employee.designation,
-          salary: data.employee.salary,
-          joiningDate: data.employee.joiningDate.split("T")[0],
-        });
-      } else {
-        alert(data.message);
+        if (data.success) {
+          setFormData({
+            employeeId: data.employee.employeeId,
+            fullName: data.employee.fullName,
+            email: data.employee.email,
+            phone: data.employee.phone,
+            department: data.employee.department,
+            designation: data.employee.designation,
+            salary: data.employee.salary,
+            joiningDate: data.employee.joiningDate.split("T")[0],
+          });
+        } else {
+          alert(data.message);
+        }
+      } catch (error) {
+        console.log(error);
+        alert("Something went wrong.");
       }
-    } catch (error) {
-      console.log(error);
+
+      setLoading(false);
     }
 
-    setLoading(false);
-  }
+    if (id) {
+      fetchEmployee();
+    }
+  }, [id]);
 
   function handleChange(e) {
     setFormData({
@@ -79,128 +83,202 @@ export default function EditEmployeePage() {
       }
     } catch (error) {
       console.log(error);
-      alert("Something went wrong");
+      alert("Something went wrong.");
     }
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <h2 className="text-2xl font-semibold">
-          Loading...
-        </h2>
-      </div>
+      <MainLayout title="Edit Employee">
+        <div className="flex items-center justify-center h-[70vh]">
+          <h2
+            className="text-2xl font-semibold"
+            style={{ color: "#474282" }}
+          >
+            Loading...
+          </h2>
+        </div>
+      </MainLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <MainLayout title="Edit Employee">
 
-      <nav className="bg-white shadow p-5 flex justify-between items-center">
+      <div className="max-w-5xl mx-auto">
 
-        <h1 className="text-2xl font-bold text-violet-600">
-          Edit Employee
-        </h1>
+        <div className="mb-8">
 
-        <button
-          onClick={() => router.push("/employees")}
-          className="bg-gray-700 text-white px-5 py-2 rounded-lg"
-        >
-          Back
-        </button>
-
-      </nav>
-
-      <div className="max-w-3xl mx-auto mt-10 bg-white rounded-xl shadow-lg p-8">
-
-        <form
-          onSubmit={handleSubmit}
-          className="grid md:grid-cols-2 gap-5"
-        >
-
-          <input
-            type="text"
-            name="employeeId"
-            value={formData.employeeId}
-            onChange={handleChange}
-            className="border rounded-lg p-3"
-            required
-          />
-
-          <input
-            type="text"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            className="border rounded-lg p-3"
-            required
-          />
-
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="border rounded-lg p-3"
-            required
-          />
-
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            className="border rounded-lg p-3"
-            required
-          />
-
-          <input
-            type="text"
-            name="department"
-            value={formData.department}
-            onChange={handleChange}
-            className="border rounded-lg p-3"
-            required
-          />
-
-          <input
-            type="text"
-            name="designation"
-            value={formData.designation}
-            onChange={handleChange}
-            className="border rounded-lg p-3"
-            required
-          />
-
-          <input
-            type="number"
-            name="salary"
-            value={formData.salary}
-            onChange={handleChange}
-            className="border rounded-lg p-3"
-            required
-          />
-
-          <input
-            type="date"
-            name="joiningDate"
-            value={formData.joiningDate}
-            onChange={handleChange}
-            className="border rounded-lg p-3"
-            required
-          />
-
-          <button
-            type="submit"
-            className="md:col-span-2 bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-semibold"
+          <h2
+            className="text-3xl font-bold"
+            style={{ color: "#474282" }}
           >
-            Update Employee
-          </button>
+            Edit Employee
+          </h2>
 
-        </form>
+          <p className="text-gray-600 mt-2">
+            Update employee information.
+          </p>
+
+        </div>
+
+        <div className="bg-white rounded-xl shadow-lg p-8">
+
+          <form
+            onSubmit={handleSubmit}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
+
+            <div>
+              <label className="block mb-2 font-medium">
+                Employee ID
+              </label>
+
+              <input
+                type="text"
+                name="employeeId"
+                value={formData.employeeId}
+                onChange={handleChange}
+                className="w-full border rounded-lg p-3"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2 font-medium">
+                Full Name
+              </label>
+
+              <input
+                type="text"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                className="w-full border rounded-lg p-3"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2 font-medium">
+                Email Address
+              </label>
+
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full border rounded-lg p-3"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2 font-medium">
+                Phone Number
+              </label>
+
+              <input
+                type="text"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full border rounded-lg p-3"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2 font-medium">
+                Department
+              </label>
+
+              <input
+                type="text"
+                name="department"
+                value={formData.department}
+                onChange={handleChange}
+                className="w-full border rounded-lg p-3"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2 font-medium">
+                Designation
+              </label>
+
+              <input
+                type="text"
+                name="designation"
+                value={formData.designation}
+                onChange={handleChange}
+                className="w-full border rounded-lg p-3"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2 font-medium">
+                Salary
+              </label>
+
+              <input
+                type="number"
+                name="salary"
+                value={formData.salary}
+                onChange={handleChange}
+                className="w-full border rounded-lg p-3"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2 font-medium">
+                Joining Date
+              </label>
+
+              <input
+                type="date"
+                name="joiningDate"
+                value={formData.joiningDate}
+                onChange={handleChange}
+                className="w-full border rounded-lg p-3"
+                required
+              />
+            </div>
+
+            <div className="md:col-span-2 flex justify-end gap-4 mt-4">
+
+              <button
+                type="button"
+                onClick={() => router.push("/employees")}
+                className="px-6 py-3 rounded-lg border"
+                style={{
+                  borderColor: "#474282",
+                  color: "#474282",
+                }}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                className="px-6 py-3 rounded-lg text-white"
+                style={{ backgroundColor: "#474282" }}
+              >
+                Update Employee
+              </button>
+
+            </div>
+
+          </form>
+
+        </div>
 
       </div>
 
-    </div>
+    </MainLayout>
   );
 }

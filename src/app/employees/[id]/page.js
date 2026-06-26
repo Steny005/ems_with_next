@@ -2,148 +2,224 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import MainLayout from "@/components/MainLayout";
 
 export default function EmployeeDetailsPage() {
   const router = useRouter();
   const { id } = useParams();
 
   const [employee, setEmployee] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getEmployee();
-  }, []);
+    async function getEmployee() {
+      try {
+        const response = await fetch(`/api/employees/${id}`);
+        const data = await response.json();
 
-  async function getEmployee() {
-    try {
-      const response = await fetch(`/api/employees/${id}`);
-      const data = await response.json();
-
-      if (data.success) {
-        setEmployee(data.employee);
-      } else {
-        alert(data.message);
+        if (data.success) {
+          setEmployee(data.employee);
+        } else {
+          alert(data.message);
+          router.push("/employees");
+        }
+      } catch (error) {
+        console.log(error);
+        alert("Something went wrong.");
+        router.push("/employees");
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.log(error);
     }
+
+    if (id) {
+      getEmployee();
+    }
+  }, [id, router]);
+
+  // Loading Screen
+  if (loading) {
+    return (
+      <MainLayout title="Employee Details">
+        <div className="flex items-center justify-center h-[70vh]">
+          <h2
+            className="text-2xl font-semibold"
+            style={{ color: "#474282" }}
+          >
+            Loading Employee...
+          </h2>
+        </div>
+      </MainLayout>
+    );
   }
 
   if (!employee) {
     return (
-      <div className="min-h-screen flex justify-center items-center">
-        <h2 className="text-2xl font-semibold">
-          Loading Employee...
-        </h2>
-      </div>
+      <MainLayout title="Employee Details">
+        <div className="flex items-center justify-center h-[70vh]">
+          <h2
+            className="text-2xl font-semibold text-red-600"
+          >
+            Employee not found
+          </h2>
+        </div>
+      </MainLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <MainLayout title="Employee Details">
 
-      {/* Navbar */}
+      <div className="max-w-5xl mx-auto">
 
-      <nav className="bg-white shadow p-5 flex justify-between">
+        {/* Heading */}
 
-        <h1 className="text-2xl font-bold text-violet-600">
-          Employee Details
-        </h1>
-
-        <button
-          onClick={() => router.push("/employees")}
-          className="bg-gray-700 text-white px-5 py-2 rounded-lg"
-        >
-          Back
-        </button>
-
-      </nav>
-
-      <div className="max-w-3xl mx-auto mt-10 bg-white rounded-xl shadow-lg p-8">
-
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="flex flex-wrap justify-between items-center gap-4 mb-8">
 
           <div>
-            <h3 className="font-semibold text-gray-500">
-              Employee ID
-            </h3>
-            <p>{employee.employeeId}</p>
-          </div>
 
-          <div>
-            <h3 className="font-semibold text-gray-500">
-              Full Name
-            </h3>
-            <p>{employee.fullName}</p>
-          </div>
+            <h2
+              className="text-3xl font-bold"
+              style={{ color: "#474282" }}
+            >
+              Employee Details
+            </h2>
 
-          <div>
-            <h3 className="font-semibold text-gray-500">
-              Email
-            </h3>
-            <p>{employee.email}</p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-gray-500">
-              Phone
-            </h3>
-            <p>{employee.phone}</p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-gray-500">
-              Department
-            </h3>
-            <p>{employee.department}</p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-gray-500">
-              Designation
-            </h3>
-            <p>{employee.designation}</p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-gray-500">
-              Salary
-            </h3>
-            <p>₹ {employee.salary}</p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-gray-500">
-              Joining Date
-            </h3>
-            <p>
-              {new Date(employee.joiningDate).toLocaleDateString()}
+            <p className="text-gray-600 mt-2">
+              View complete employee information.
             </p>
+
           </div>
-
-        </div>
-
-        <div className="flex gap-4 mt-10">
-
-          <button
-            onClick={() =>
-              router.push(`/employees/${employee._id}/edit`)
-            }
-            className="bg-yellow-500 text-white px-6 py-3 rounded-lg"
-          >
-            Edit Employee
-          </button>
 
           <button
             onClick={() => router.push("/employees")}
-            className="bg-violet-600 text-white px-6 py-3 rounded-lg"
+            className="px-6 py-3 rounded-lg text-white transition"
+            style={{ backgroundColor: "#474282" }}
           >
-            Employee List
+            Back
           </button>
+
+        </div>
+
+        {/* Details Card */}
+
+        <div className="bg-white rounded-xl shadow-lg p-8">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div>
+              <p className="text-gray-500 mb-1">
+                Employee ID
+              </p>
+
+              <h3 className="text-lg font-semibold break-words">
+                {employee.employeeId}
+              </h3>
+            </div>
+
+            <div>
+              <p className="text-gray-500 mb-1">
+                Full Name
+              </p>
+
+              <h3 className="text-lg font-semibold break-words">
+                {employee.fullName}
+              </h3>
+            </div>
+
+            <div>
+              <p className="text-gray-500 mb-1">
+                Email Address
+              </p>
+
+              <h3 className="text-lg font-semibold break-words">
+                {employee.email}
+              </h3>
+            </div>
+
+            <div>
+              <p className="text-gray-500 mb-1">
+                Phone Number
+              </p>
+
+              <h3 className="text-lg font-semibold break-words">
+                {employee.phone}
+              </h3>
+            </div>
+
+            <div>
+              <p className="text-gray-500 mb-1">
+                Department
+              </p>
+
+              <h3 className="text-lg font-semibold break-words">
+                {employee.department}
+              </h3>
+            </div>
+
+            <div>
+              <p className="text-gray-500 mb-1">
+                Designation
+              </p>
+
+              <h3 className="text-lg font-semibold break-words">
+                {employee.designation}
+              </h3>
+            </div>
+
+            <div>
+              <p className="text-gray-500 mb-1">
+                Salary
+              </p>
+
+              <h3 className="text-lg font-semibold">
+                ₹ {employee.salary}
+              </h3>
+            </div>
+
+            <div>
+              <p className="text-gray-500 mb-1">
+                Joining Date
+              </p>
+
+              <h3 className="text-lg font-semibold">
+                {new Date(employee.joiningDate).toLocaleDateString()}
+              </h3>
+            </div>
+
+          </div>
+
+          {/* Action Buttons */}
+
+          <div className="flex flex-wrap gap-4 mt-10">
+
+            <button
+              onClick={() =>
+                router.push(`/employees/${employee._id}/edit`)
+              }
+              className="px-6 py-3 rounded-lg text-white transition"
+              style={{ backgroundColor: "#474282" }}
+            >
+              Edit Employee
+            </button>
+
+            <button
+              onClick={() => router.push("/employees")}
+              className="px-6 py-3 rounded-lg border transition"
+              style={{
+                borderColor: "#474282",
+                color: "#474282",
+              }}
+            >
+              Employee List
+            </button>
+
+          </div>
 
         </div>
 
       </div>
 
-    </div>
+    </MainLayout>
   );
 }

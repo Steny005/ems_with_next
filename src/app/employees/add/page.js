@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
+import MainLayout from "@/components/MainLayout";
 export default function AddEmployeePage() {
   const router = useRouter();
 
@@ -57,123 +57,183 @@ export default function AddEmployeePage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100">
+  <MainLayout title="Add Employee">
 
-      {/* Navbar */}
+    <div className="max-w-5xl mx-auto">
 
-      <nav className="bg-white shadow p-5 flex justify-between items-center">
+      <div className="mb-8">
 
-        <h1 className="text-2xl font-bold text-violet-600">
-          Add Employee
-        </h1>
-
-        <button
-          onClick={() => router.push("/employees")}
-          className="bg-gray-700 text-white px-5 py-2 rounded-lg"
+        <h2
+          className="text-3xl font-bold"
+          style={{ color: "#474282" }}
         >
-          Back
-        </button>
+          Add New Employee
+        </h2>
 
-      </nav>
+        <p className="text-gray-600 mt-2">
+          Enter the employee details below.
+        </p>
 
-      <div className="max-w-3xl mx-auto bg-white mt-10 rounded-xl shadow-lg p-8">
+      </div>
+
+      <div className="bg-white rounded-xl shadow-lg p-8">
 
         <form
           onSubmit={handleSubmit}
-          className="grid md:grid-cols-2 gap-5"
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
 
-          <input
-            type="text"
-            name="employeeId"
-            placeholder="Employee ID"
-            value={formData.employeeId}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-            required
-          />
+          <div>
+            <label className="block mb-2 font-medium">
+              Employee ID
+            </label>
 
-          <input
-            type="text"
-            name="fullName"
-            placeholder="Full Name"
-            value={formData.fullName}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-            required
-          />
+            <input
+              type="text"
+              name="employeeId"
+              value={formData.employeeId}
+              onChange={handleChange}
+              className="w-full border rounded-lg p-3"
+              required
+            />
+          </div>
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Email Address"
-            value={formData.email}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-            required
-          />
+          <div>
+            <label className="block mb-2 font-medium">
+              Full Name
+            </label>
 
-          <input
-            type="text"
-            name="phone"
-            placeholder="Phone Number"
-            value={formData.phone}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-            required
-          />
+            <input
+              type="text"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              className="w-full border rounded-lg p-3"
+              required
+            />
+          </div>
 
-          <input
-            type="text"
-            name="department"
-            placeholder="Department"
-            value={formData.department}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-            required
-          />
+          <div>
+            <label className="block mb-2 font-medium">
+              Email Address
+            </label>
 
-          <input
-            type="text"
-            name="designation"
-            placeholder="Designation"
-            value={formData.designation}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-            required
-          />
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full border rounded-lg p-3"
+              required
+            />
+          </div>
 
-          <input
-            type="number"
-            name="salary"
-            placeholder="Salary"
-            value={formData.salary}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-            required
-          />
+          <div>
+            <label className="block mb-2 font-medium">
+              Phone Number
+            </label>
 
-          <input
-            type="date"
-            name="joiningDate"
-            value={formData.joiningDate}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-            required
-          />
+            <input
+              type="text"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              className="w-full border rounded-lg p-3"
+              required
+            />
+          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="md:col-span-2 bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-semibold"
-          >
-            {loading ? "Saving..." : "Add Employee"}
-          </button>
+          <div>
+            <label className="block mb-2 font-medium">
+              Department
+            </label>
+
+            <input
+              type="text"
+              name="department"
+              value={formData.department}
+              onChange={handleChange}
+              className="w-full border rounded-lg p-3"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 font-medium">
+              Designation
+            </label>
+
+            <input
+              type="text"
+              name="designation"
+              value={formData.designation}
+              onChange={handleChange}
+              className="w-full border rounded-lg p-3"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 font-medium">
+              Salary
+            </label>
+
+            <input
+              type="number"
+              name="salary"
+              value={formData.salary}
+              onChange={handleChange}
+              className="w-full border rounded-lg p-3"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 font-medium">
+              Joining Date
+            </label>
+
+            <input
+              type="date"
+              name="joiningDate"
+              value={formData.joiningDate}
+              onChange={handleChange}
+              className="w-full border rounded-lg p-3"
+              required
+            />
+          </div>
+
+          <div className="md:col-span-2 flex justify-end gap-4 mt-4">
+
+            <button
+              type="button"
+              onClick={() => router.push("/employees")}
+              className="px-6 py-3 border rounded-lg"
+              style={{
+                borderColor: "#474282",
+                color: "#474282",
+              }}
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-6 py-3 rounded-lg text-white transition"
+              style={{ backgroundColor: "#474282" }}
+            >
+              {loading ? "Saving..." : "Add Employee"}
+            </button>
+
+          </div>
 
         </form>
 
       </div>
 
     </div>
-  );
+
+  </MainLayout>
+);
 }
