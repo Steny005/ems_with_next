@@ -54,7 +54,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-5">
+    <div className="min-h-screen bg-slate-2 flex items-center justify-center px-5" style={{ color: "#474282" }}>
 
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
 
@@ -92,7 +92,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-violet-600 hover:bg-violet-700 text-white rounded-lg p-3 transition"
+            className="w-full bg-red-600 hover:bg-violet-700 text-white rounded-lg p-3 transition"
           >
             {loading ? "Logging In..." : "Login"}
           </button>
